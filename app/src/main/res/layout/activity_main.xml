@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="start"
+            android:src="@drawable/bannerlogo"
+            android:layout_weight="1"
+            android:contentDescription="TODO" />
+        <AutoCompleteTextView
+            android:id="@+id/edt_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_margin="5dp"
+            android:hint="Tìm kiếm công thức"
+            android:gravity="center"
+            android:background="@drawable/custom_search_edt"
+            android:autofillHints=""
+            android:imeOptions="actionSearch"
+            android:completionThreshold="1"
+            android:inputType="text" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#888" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/mViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#888" />
+
+    <com.yinglan.alphatabs.AlphaTabsIndicator
+        android:id="@+id/alphaIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <com.yinglan.alphatabs.AlphaTabView
+            android:layout_margin="7dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="0dp"
+            app:tabIconNormal="@mipmap/cooking"
+            app:tabIconSelected="@mipmap/thuc_don_hom_nay_select"
+            app:tabText="THỰC ĐƠN HÔM NAY"
+
+            app:tabTextSize="10sp"
+            app:textColorNormal="#000000"
+            app:textColorSelected="#F2A22C" />
+
+        <com.yinglan.alphatabs.AlphaTabView
+            android:layout_margin="2dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:tabIconNormal="@mipmap/cong_thuc"
+            app:tabIconSelected="@mipmap/cong_thuc_select"
+            app:tabText="CÔNG THỨC"
+            app:tabTextSize="10sp"
+            app:textColorNormal="#000000"
+            app:textColorSelected="#F2A22C" />
+
+        <com.yinglan.alphatabs.AlphaTabView
+            android:layout_margin="2dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:tabIconNormal="@mipmap/search_food"
+            app:tabIconSelected="@mipmap/search_food_select"
+            app:tabText="TÌM KIẾM"
+            app:tabTextSize="10sp"
+            app:textColorNormal="#000000"
+            app:textColorSelected="#F2A22C" />
+
+
+        <com.yinglan.alphatabs.AlphaTabView
+            android:layout_margin="2dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            app:tabIconNormal="@mipmap/user"
+            app:tabIconSelected="@mipmap/user_select"
+            app:tabText="Tài khoản"
+            app:tabTextSize="12sp"
+            app:textColorNormal="#000000"
+            app:textColorSelected="#F2A22C" />
+    </com.yinglan.alphatabs.AlphaTabsIndicator>
+
+</LinearLayout>

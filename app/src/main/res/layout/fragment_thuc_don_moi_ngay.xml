@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragment.ThucDonMoiNgay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/thuc_don_moi_ngay"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Sáng"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold|italic"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:gravity="end|bottom"
+                android:layout_weight="1"
+                android:text="Gợi ý thực đơn sáng khác"
+                android:layout_marginEnd="10dp"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="10dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lineSang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Trưa"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold|italic"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:gravity="end|bottom"
+                android:layout_weight="1"
+                android:text="Gợi ý thực đơn trưa khác"
+                android:layout_marginEnd="10dp"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="10dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lineTrua"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Tối"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold|italic"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:gravity="end|bottom"
+                android:layout_weight="1"
+                android:text="Gợi ý thực đơn tối khác"
+                android:layout_marginEnd="10dp"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:layout_marginBottom="10dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
