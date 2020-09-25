@@ -4,27 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Activity.ActivityLoad">
-
-    <ImageView
-        android:id="@+id/gifLoad"
+    tools:context=".View.Activity.ActivitySearch">
+    <WebView
+        android:id="@+id/webviewSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:src="@drawable/bannerlogo"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="TODO" />
 
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/waitload"
-        style="@style/SpinKitView.Small.ThreeBounce"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="190dp"
-        app:SpinKit_Color="#F2A22C"
-        app:layout_constraintBottom_toBottomOf="@+id/gifLoad"
-        app:layout_constraintEnd_toEndOf="@+id/gifLoad"
-        app:layout_constraintStart_toStartOf="@+id/gifLoad" />
 </androidx.constraintlayout.widget.ConstraintLayout>

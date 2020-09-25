@@ -1,11 +1,7 @@
-package com.billi.homnayangi;
+package com.billi.homnayangi.Utils;
 
 import android.app.Application;
 import com.google.gson.Gson;
-
-/**
- * Created by FRAMGIA\dang.anh.quan on 29/08/2017.
- */
 
 public class App extends Application {
 

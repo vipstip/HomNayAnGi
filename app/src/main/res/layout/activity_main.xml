@@ -6,6 +6,7 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
     <LinearLayout
+        android:id="@+id/lineSearch"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:orientation="horizontal">
@@ -16,6 +17,7 @@
             android:src="@drawable/bannerlogo"
             android:layout_weight="1"
             android:contentDescription="TODO" />
+
         <AutoCompleteTextView
             android:id="@+id/edt_search"
             android:layout_width="0dp"
@@ -27,9 +29,12 @@
             android:background="@drawable/custom_search_edt"
             android:autofillHints=""
             android:imeOptions="actionSearch"
+            android:focusable="false"
             android:completionThreshold="1"
+            android:drawableStart="@drawable/ic_baseline_search_24"
             android:inputType="text" />
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
@@ -60,7 +65,7 @@
             android:padding="0dp"
             app:tabIconNormal="@mipmap/cooking"
             app:tabIconSelected="@mipmap/thuc_don_hom_nay_select"
-            app:tabText="THỰC ĐƠN HÔM NAY"
+            app:tabText="Gợi ý thực đơn"
 
             app:tabTextSize="10sp"
             app:textColorNormal="#000000"

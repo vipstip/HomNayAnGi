@@ -1,16 +1,14 @@
-package com.billi.homnayangi;
+package com.billi.homnayangi.View.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Html;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.billi.homnayangi.R;
 import com.bumptech.glide.Glide;
 import com.github.ybq.android.spinkit.style.ThreeBounce;
 
@@ -35,7 +33,7 @@ public class ActivityLoad extends AppCompatActivity {
                 checkLoadComplete = true;
                 onBackPressed();
             }
-        }, 3000);
+        }, 2000);
     }
 
     @Override

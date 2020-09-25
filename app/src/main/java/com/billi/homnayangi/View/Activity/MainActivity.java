@@ -1,4 +1,4 @@
-package com.billi.homnayangi;
+package com.billi.homnayangi.View.Activity;
 
 
 import androidx.annotation.NonNull;
@@ -15,8 +15,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
-import com.billi.homnayangi.Fragment.ThucDonMoiNgay;
+import com.billi.homnayangi.View.Fragment.FragmentTaiKhoan;
+import com.billi.homnayangi.View.Fragment.FragmentTimKiem;
+import com.billi.homnayangi.View.Fragment.TextFragment;
+import com.billi.homnayangi.View.Fragment.ThucDonMoiNgay;
+import com.billi.homnayangi.R;
 import com.yinglan.alphatabs.AlphaTabsIndicator;
 
 import java.util.ArrayList;
@@ -27,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private AlphaTabsIndicator alphaTabsIndicator;
     private EditText edtSearch;
     private ViewPager mViewPger;
+    private LinearLayout lineSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         edtSearch.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -54,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
     @Override
     public void onBackPressed() {
@@ -75,22 +83,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void init(){
+        lineSearch = findViewById(R.id.lineSearch);
         alphaTabsIndicator = findViewById(R.id.alphaIndicator);
         mViewPger = findViewById(R.id.mViewPager);
         edtSearch = findViewById(R.id.edt_search);
     }
+
     private class MainAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
 
         private List<Fragment> fragments = new ArrayList<>();
-        private String[] titles = {"Thực đơn hôm này", "Công thức", "Tìm kiếm", "Thông tin"};
+        private String[] titles = {"Gợi ý thực đơn", "Công thức", "Tìm kiếm", "Thông tin"};
 
         public MainAdapter(FragmentManager fm) {
             super(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
             fragments.add(ThucDonMoiNgay.newInstance());
             fragments.add(TextFragment.newInstance(titles[1]));
-            fragments.add(TextFragment.newInstance(titles[2]));
-            fragments.add(TextFragment.newInstance(titles[3]));
+            fragments.add(FragmentTimKiem.newInstance());
+            fragments.add(FragmentTaiKhoan.newInstance());
         }
 
         @Override
@@ -111,13 +121,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             if (0 == position) {
-                alphaTabsIndicator.getTabView(0).showNumber(alphaTabsIndicator.getTabView(0).getBadgeNumber() - 1);
+                lineSearch.setVisibility(View.VISIBLE);
             } else if (1 == position) {
-                alphaTabsIndicator.getTabView(1).removeShow();
+                lineSearch.setVisibility(View.VISIBLE);
             } else if (2 == position) {
-                alphaTabsIndicator.getCurrentItemView().removeShow();
+                lineSearch.setVisibility(View.GONE);
             } else if (3 == position) {
-                alphaTabsIndicator.removeAllBadge();
+                lineSearch.setVisibility(View.VISIBLE);
             }
         }
 

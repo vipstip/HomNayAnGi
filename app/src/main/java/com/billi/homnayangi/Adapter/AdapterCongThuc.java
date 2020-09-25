@@ -1,14 +1,16 @@
 package com.billi.homnayangi.Adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.billi.homnayangi.View.Activity.ActivitySearch;
 import com.billi.homnayangi.Models.DataCongThuc;
 import com.billi.homnayangi.R;
 import com.bumptech.glide.Glide;
@@ -46,7 +48,7 @@ public class AdapterCongThuc extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder;
         if (view == null){
             viewHolder = new ViewHolder();
@@ -61,7 +63,6 @@ public class AdapterCongThuc extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-
         Glide.with(context)
                 .load(lstCongThuc.get(i).getHinhAnh())
                 .transform(new CenterCrop(), new RoundedCorners(10))
@@ -70,6 +71,20 @@ public class AdapterCongThuc extends BaseAdapter {
         viewHolder.txtView.setText(String.valueOf(lstCongThuc.get(i).getLuongNguoiXem()));
         viewHolder.txtLike.setText(String.valueOf(lstCongThuc.get(i).getLuongThich()));
         viewHolder.txtTime.setText(String.valueOf(lstCongThuc.get(i).getThoigianNau()));
+        final AlphaAnimation click = new AlphaAnimation(1F, 0.2F);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    view.startAnimation(click);
+                    Intent intent = new Intent(view.getContext(),ActivitySearch.class);
+                    intent.putExtra("Search", lstCongThuc.get(i).getTenCongThuc());
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+            }
+        });
         return view;
     }
 

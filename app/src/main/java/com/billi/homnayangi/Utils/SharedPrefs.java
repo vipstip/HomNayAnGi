@@ -3,7 +3,12 @@ package com.billi.homnayangi.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.billi.homnayangi.App;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -83,6 +88,78 @@ public class SharedPrefs {
         editor.apply();
     }
 
+    public <T> void putList(String key,  Class<T> anonymousClass, List<T> list){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putInt(key,list.size());
+        if (anonymousClass == String.class) {
+            for (int i = 0; i < list.size(); i++){
+                editor.putString(key+i,(String) list.get(i));
+            }
+        } else if (anonymousClass == Boolean.class ) {
+            for (int i = 0; i < list.size(); i++){
+                editor.putBoolean(key+i,(Boolean) list.get(i));
+            }
+        } else if (anonymousClass == Float.class) {
+            for (int i = 0; i < list.size(); i++){
+                editor.putFloat(key+i,(Float) list.get(i));
+            }
+        } else if (anonymousClass == Integer.class) {
+            for (int i = 0; i < list.size(); i++){
+                editor.putInt(key+i,(Integer) list.get(i));
+            }
+        } else if (anonymousClass == Long.class) {
+            for (int i = 0; i < list.size(); i++){
+                editor.putLong(key+i,(Long) list.get(i));
+            }
+        } else {
+            for (int i = 0; i < list.size(); i++){
+                editor.putString(key+i,App.self().getGSon().toJson(list));
+            }
+        }
+        editor.apply();
+    }
+    public <T> List<T> getList(String key ,Class<T> anonymousClass){
+
+        int size = mSharedPreferences.getInt(key,0);
+
+        if (anonymousClass == String.class) {
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < size; i++){
+                list.add(mSharedPreferences.getString(key+i,""));
+            }
+            return (List<T>) list;
+        } else if (anonymousClass == Boolean.class) {
+            List<Boolean> list = new ArrayList<>();
+            for (int i = 0; i < size; i++){
+                list.add(mSharedPreferences.getBoolean(key+i,false));
+            }
+            return (List<T>) list;
+        } else if (anonymousClass == Float.class) {
+            List<Float> list = new ArrayList<>();
+            for (int i = 0; i < size; i++){
+                list.add(mSharedPreferences.getFloat(key+i,0));
+            }
+            return (List<T>) list;
+        } else if (anonymousClass == Integer.class) {
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < size; i++){
+                list.add(mSharedPreferences.getInt(key+i,0));
+            }
+            return (List<T>) list;
+        } else if (anonymousClass == Long.class) {
+            List<Long> list = new ArrayList<>();
+            for (int i = 0; i < size; i++){
+                list.add(mSharedPreferences.getLong(key+i,0));
+            }
+            return (List<T>) list;
+        } else {
+            List<String> list = new ArrayList<>();
+            for (int i = 0; i < size; i++){
+                list.add(mSharedPreferences.getString(key+i,""));
+            }
+            return (List<T>) list;
+        }
+    }
     public void clear() {
         mSharedPreferences.edit().clear().apply();
     }
