@@ -7,7 +7,7 @@
     android:orientation="vertical">
     <LinearLayout
         android:id="@+id/lineSearch"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
         <ImageView
@@ -32,7 +32,8 @@
             android:focusable="false"
             android:completionThreshold="1"
             android:drawableStart="@drawable/ic_baseline_search_24"
-            android:inputType="text" />
+            android:inputType="text"
+            />
     </LinearLayout>
 
     <View

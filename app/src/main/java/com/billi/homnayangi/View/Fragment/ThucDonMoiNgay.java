@@ -1,10 +1,12 @@
 package com.billi.homnayangi.View.Fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -53,41 +57,26 @@ public class ThucDonMoiNgay extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private String rootDomain = "http://192.168.1.61/crawldata";
-    private String urlGetData = "http://192.168.1.61/crawldata/appLoadData.php";
+    private String urlGetData = "https://noithattrangtrihoanganh.com/appLoadData.php";
+    private String rootDomain = "https://noithattrangtrihoanganh.com";
 
-    private List<DataCongThuc> lstCongThucSang = new ArrayList<>();
-    private List<DataCongThuc> lstCongThucTrua = new ArrayList<>();
-    private List<DataCongThuc> lstCongThucToi = new ArrayList<>();
+    private List<DataCongThuc> lstCongThuc = new ArrayList<>();
 
-    private AdapterCongThuc adapterCongThucSang;
     private AdapterCongThuc adapterCongThucTrua;
-    private AdapterCongThuc adapterCongThucToi;
 
-    private Boolean checkGetSang = false;
-    private Boolean checkGetTrua = false;
-    private Boolean checkGetToi = false;
+    private Boolean checkGetData = false;
     private Boolean checkLoad = false;
 
-    private String TEXT_SANG = "SANG";
-    private String TEXT_TRUA = "TRUA";
-    private String TEXT_TOI = "TOI";
-
+    private String TEXT_CHECK = "TRUA";
     ProgressBar progressBar;
-    ProgressBar progressBarSang;
-    ProgressBar progressBarTrua;
-    ProgressBar progressBarToi;
+    ProgressBar progressBarThucDon;
 
-    LinearLayout lineSang;
     LinearLayout lineTrua;
-    LinearLayout lineToi;
     LinearLayout lineLoad;
     LinearLayout lineCongThuc;
 
-    private TextView goiySang,goiyTrua,goiyToi;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private TextView tvGoiY;
+    private Button btnGoiY;
 
     public ThucDonMoiNgay() {
 
@@ -104,8 +93,6 @@ public class ThucDonMoiNgay extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -123,84 +110,64 @@ public class ThucDonMoiNgay extends Fragment {
         final int currentTime = Calendar.getInstance().getTime().getDate();
         final int lateTime = SharedPrefs.getInstance().get("lateTime", Integer.class);
         progressBar = (ProgressBar)view.findViewById(R.id.waitload);
-        progressBarSang = (ProgressBar)view.findViewById(R.id.waitloadSang);
-        progressBarTrua = (ProgressBar)view.findViewById(R.id.waitloadTrua);
-        progressBarToi = (ProgressBar)view.findViewById(R.id.waitloadToi);
-        lineSang = view.findViewById(R.id.lineSang);
+        progressBarThucDon = (ProgressBar)view.findViewById(R.id.waitloadTrua);
+        tvGoiY = view.findViewById(R.id.goiyTrua);
         lineTrua = view.findViewById(R.id.lineTrua);
-        lineToi = view.findViewById(R.id.lineToi);
         lineLoad = view.findViewById(R.id.lineLoad);
         lineCongThuc = view.findViewById(R.id.lineThucDonMoiNgay);
+        btnGoiY = view.findViewById(R.id.btnGoiY);
 
         final AlphaAnimation click = new AlphaAnimation(1F, 0.2F);
 
         final Circle doubleBounce = new Circle();
         final Circle doubleBounce1 = new Circle();
-        final Circle doubleBounce2 = new Circle();
+
         progressBar.setIndeterminateDrawable(doubleBounce);
-        if (!checkLoad){
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+
+        btnGoiY.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                lineLoad.setVisibility(View.VISIBLE);
+                btnGoiY.setVisibility(View.GONE);
+                getCongThucNew(getContext(), currentTime, lineTrua, TEXT_CHECK, new ListenerSang() {
+
                 @Override
-                public void run() {
-                    checkLoad = true;
-                    lineLoad.setVisibility(View.GONE);
-                    lineCongThuc.setVisibility(View.VISIBLE);
+                public void onError(String message) {
+                    Log.e("Err",message);
                 }
-            }, 5000);
-        } else {
-            lineLoad.setVisibility(View.GONE);
+
+                @Override
+                public void onResponse() {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            checkLoad = true;
+                            lineLoad.setVisibility(View.GONE);
+                            lineCongThuc.setVisibility(View.VISIBLE);
+                        }
+                        }, 3000);
+                }
+                });
+            }
+        });
+
+        if (checkLoad){
+            btnGoiY.setVisibility(View.GONE);
             lineCongThuc.setVisibility(View.VISIBLE);
+            getCongThucLate(view.getContext(),lineTrua,TEXT_CHECK);
         }
-        goiySang = view.findViewById(R.id.goiySang);
-        goiyTrua = view.findViewById(R.id.goiyTrua);
-        goiyToi = view.findViewById(R.id.goiyToi);
 
-        goiySang.setOnClickListener(new View.OnClickListener() {
+        tvGoiY.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBarSang.setIndeterminateDrawable(doubleBounce);
-                progressBarSang.setVisibility(View.VISIBLE);
-                lineSang.setVisibility(View.GONE);
-                goiySang.startAnimation(click);
-                getGoiYCongThucNew(view.getContext(),TEXT_SANG,currentTime,lineSang);
-            }
-        });
-
-        goiyTrua.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBarTrua.setIndeterminateDrawable(doubleBounce1);
-                progressBarTrua.setVisibility(View.VISIBLE);
+                progressBarThucDon.setIndeterminateDrawable(doubleBounce1);
+                progressBarThucDon.setVisibility(View.VISIBLE);
                 lineTrua.setVisibility(View.GONE);
-                goiyTrua.startAnimation(click);
-                getGoiYCongThucNew(view.getContext(),TEXT_TRUA,currentTime,lineTrua);
+                tvGoiY.startAnimation(click);
+                getGoiYCongThucNew(view.getContext(),TEXT_CHECK,currentTime,lineTrua);
             }
         });
-
-        goiyToi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBarToi.setIndeterminateDrawable(doubleBounce2);
-                progressBarToi.setVisibility(View.VISIBLE);
-                lineToi.setVisibility(View.GONE);
-                goiyToi.startAnimation(click);
-                getGoiYCongThucNew(view.getContext(),TEXT_TOI,currentTime,lineToi);
-            }
-        });
-
-        if (lateTime != currentTime){
-            Log.e("late",lateTime + "");
-            //Get cong thuc buoi Sang
-            getCongThucNew(view.getContext(),currentTime,lineSang,TEXT_SANG);
-            getCongThucNew(view.getContext(),currentTime,lineTrua,TEXT_TRUA);
-            getCongThucNew(view.getContext(),currentTime,lineToi,TEXT_TOI);
-        } else {
-            getCongThucLate(view.getContext(),lineSang,TEXT_SANG);
-            getCongThucLate(view.getContext(),lineTrua,TEXT_TRUA);
-            getCongThucLate(view.getContext(),lineToi,TEXT_TOI);
-        }
-
         //
         return view;
     }
@@ -212,31 +179,13 @@ public class ThucDonMoiNgay extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         try {
-
-                            if (BuaAn.equals(TEXT_SANG)){
-                                JSONObject object = new JSONObject(response);
-                                lstCongThucSang.clear();
-                                lstCongThucSang.add(
-                                        new DataCongThuc(
-                                                object.getInt("congthucid"),
-                                                object.getString("tencongthuc"),
-                                                object.getInt("thoigianlam"),
-                                                object.getInt("luotnguoithich"),
-                                                object.getInt("luotnguoixem"),
-                                                rootDomain +  object.getString("hinhanh")));
-                                putShared(BuaAn,0 ,object.getInt("congthucid"),
-                                        object.getString("tencongthuc"),
-                                        object.getInt("thoigianlam"),
-                                        object.getInt("luotnguoithich"),
-                                        object.getInt("luotnguoixem"),
-                                        rootDomain + object.getString("hinhanh"));
-                            }else if (BuaAn.equals(TEXT_TRUA)){
+                            if (BuaAn.equals(TEXT_CHECK)){
                                 JSONArray array = new JSONArray(response);
-                                SharedPrefs.getInstance().put(TEXT_TRUA,array.length());
-                                lstCongThucTrua.clear();
+                                SharedPrefs.getInstance().put(TEXT_CHECK,array.length());
+                                lstCongThuc.clear();
                                 for (int i = 0; i < array.length(); i++){
                                     JSONObject object = array.getJSONObject(i);
-                                    lstCongThucTrua.add(
+                                    lstCongThuc.add(
                                             new DataCongThuc(
                                                     object.getInt("congthucid"),
                                                     object.getString("tencongthuc"),
@@ -252,27 +201,6 @@ public class ThucDonMoiNgay extends Fragment {
                                             rootDomain + object.getString("hinhanh"));
                                 }
 
-                            }else if (BuaAn.equals(TEXT_TOI)){
-                                JSONArray array = new JSONArray(response);
-                                SharedPrefs.getInstance().put(TEXT_TOI,array.length());
-                                lstCongThucToi.clear();
-                                for (int i = 0; i < array.length(); i++){
-                                    JSONObject object = array.getJSONObject(i);
-                                    lstCongThucToi.add(
-                                            new DataCongThuc(
-                                                    object.getInt("congthucid"),
-                                                    object.getString("tencongthuc"),
-                                                    object.getInt("thoigianlam"),
-                                                    object.getInt("luotnguoithich"),
-                                                    object.getInt("luotnguoixem"),
-                                                   rootDomain + object.getString("hinhanh")));
-                                    putShared(BuaAn,i ,object.getInt("congthucid"),
-                                            object.getString("tencongthuc"),
-                                            object.getInt("thoigianlam"),
-                                            object.getInt("luotnguoithich"),
-                                            object.getInt("luotnguoixem"),
-                                            rootDomain + object.getString("hinhanh"));
-                                }
                             }
 
                         } catch (JSONException e) {
@@ -303,7 +231,22 @@ public class ThucDonMoiNgay extends Fragment {
                 return params;
             }
         };
+        stringRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
 
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
         requestQueue.add(stringRequest);
     }
 
@@ -320,122 +263,33 @@ public class ThucDonMoiNgay extends Fragment {
         onSaveInstanceState(bundle);
     }
 
-    public void getCongThucNew(final Context context, final int currentTime, final LinearLayout lineCongThuc, final String BuaAn){
-        if (BuaAn.equals(TEXT_SANG)){
-            if (!checkGetSang){
+    public void getCongThucNew(final Context context, final int currentTime, final LinearLayout lineCongThuc, final String BuaAn, final ListenerSang listenerSang){
                 getDataCongThuc(context, BuaAn, new ListenerSang() {
                     @Override
                     public void onError(String message) {
-
+                        listenerSang.onError(message);
                     }
 
                     @Override
                     public void onResponse() {
                         SharedPrefs.getInstance().put("lateTime", currentTime);
-                        SharedPrefs.getInstance().put("lstCongThucSang",lstCongThucSang);
-                        checkGetSang = true;
-                        adapterCongThucSang = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucSang);
-                        adapterCongThucSang.notifyDataSetChanged();
-
-                        for (int i = 0; i < adapterCongThucSang.getCount(); i++){
-                            lineCongThuc.addView(adapterCongThucSang.getView(i,null,null));
-                        }
-
-                    }
-                });
-            } else {
-                adapterCongThucSang = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucSang);
-                adapterCongThucSang.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucSang.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucSang.getView(i,null,null));
-                }
-            }
-        }else if (BuaAn.equals(TEXT_TRUA)){
-            if (!checkGetTrua){
-                getDataCongThuc(context, BuaAn, new ListenerSang() {
-                    @Override
-                    public void onError(String message) {
-
-                    }
-
-                    @Override
-                    public void onResponse() {
-                        SharedPrefs.getInstance().put("lateTime", currentTime);
-                        checkGetTrua = true;
-                        adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucTrua);
+                        checkGetData = true;
+                        adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_recipes,lstCongThuc);
                         adapterCongThucTrua.notifyDataSetChanged();
                         for (int i = 0; i < adapterCongThucTrua.getCount(); i++){
                             lineCongThuc.addView(adapterCongThucTrua.getView(i,null,null));
                         }
+                        listenerSang.onResponse();
                     }
                 });
-            } else {
-                adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucTrua);
-                adapterCongThucTrua.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucTrua.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucTrua.getView(i,null,null));
-                }
-            }
-        }else if (BuaAn.equals(TEXT_TOI)){
-            if (!checkGetToi){
-                getDataCongThuc(context, BuaAn, new ListenerSang() {
-                    @Override
-                    public void onError(String message) {
-
-                    }
-
-                    @Override
-                    public void onResponse() {
-                        SharedPrefs.getInstance().put("lateTime", currentTime);
-                        SharedPrefs.getInstance().put("lstCongThuc"+BuaAn,lstCongThucToi);
-                        checkGetToi = true;
-                        adapterCongThucToi = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucToi);
-                        adapterCongThucToi.notifyDataSetChanged();
-                        for (int i = 0; i < adapterCongThucToi.getCount(); i++){
-                            lineCongThuc.addView(adapterCongThucToi.getView(i,null,null));
-                        }
-                    }
-                });
-            } else {
-                adapterCongThucToi = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucToi);
-                adapterCongThucToi.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucToi.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucToi.getView(i,null,null));
-                }
-            }
-        }
     }
 
     public void getCongThucLate(Context context,LinearLayout lineCongThuc,String BuaAn){
-        if (BuaAn.equals(TEXT_SANG)){
-            if (!checkGetSang){
-                checkGetSang = true;
-                lstCongThucSang.add(new DataCongThuc(
-                        SharedPrefs.getInstance().get("congthucid"+BuaAn+0,Integer.class),
-                        SharedPrefs.getInstance().get("tencongthuc"+BuaAn+0,String.class),
-                        SharedPrefs.getInstance().get("thoigianlam"+BuaAn+0,Integer.class),
-                        SharedPrefs.getInstance().get("luotnguoithich"+BuaAn+0,Integer.class),
-                        SharedPrefs.getInstance().get("luotnguoixem"+BuaAn+0,Integer.class),
-                        SharedPrefs.getInstance().get("hinhanh"+BuaAn+0,String.class)
-                ));
-                adapterCongThucSang = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucSang);
-                adapterCongThucSang.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucSang.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucSang.getView(i,null,null));
-                }
-            }
-            else {
-                adapterCongThucSang = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucSang);
-                adapterCongThucSang.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucSang.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucSang.getView(i,null,null));
-                }
-            }
-        }else if (BuaAn.equals(TEXT_TRUA)){
-            if (!checkGetTrua){
-                checkGetTrua = true;
+        if (BuaAn.equals(TEXT_CHECK)){
+            if (!checkGetData){
+                checkGetData = true;
                 for (int i = 0; i < SharedPrefs.getInstance().get(BuaAn,Integer.class);i++){
-                    lstCongThucTrua.add(new DataCongThuc(
+                    lstCongThuc.add(new DataCongThuc(
                             SharedPrefs.getInstance().get("congthucid"+BuaAn+i,Integer.class),
                             SharedPrefs.getInstance().get("tencongthuc"+BuaAn+i,String.class),
                             SharedPrefs.getInstance().get("thoigianlam"+BuaAn+i,Integer.class),
@@ -444,71 +298,23 @@ public class ThucDonMoiNgay extends Fragment {
                             SharedPrefs.getInstance().get("hinhanh"+BuaAn+i,String.class)
                     ));
                 }
-                adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucTrua);
+                adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_recipes,lstCongThuc);
                 adapterCongThucTrua.notifyDataSetChanged();
                 for (int i = 0; i < adapterCongThucTrua.getCount(); i++){
                     lineCongThuc.addView(adapterCongThucTrua.getView(i,null,null));
                 }
             }
             else {
-                adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucTrua);
+                adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_recipes,lstCongThuc);
                 adapterCongThucTrua.notifyDataSetChanged();
                 for (int i = 0; i < adapterCongThucTrua.getCount(); i++){
                     lineCongThuc.addView(adapterCongThucTrua.getView(i,null,null));
-                }
-            }
-        } else if (BuaAn.equals(TEXT_TOI)){
-            if (!checkGetToi){
-                checkGetToi = true;
-                for (int i = 0; i < SharedPrefs.getInstance().get(BuaAn,Integer.class);i++){
-                    lstCongThucToi.add(new DataCongThuc(
-                            SharedPrefs.getInstance().get("congthucid"+BuaAn+i,Integer.class),
-                            SharedPrefs.getInstance().get("tencongthuc"+BuaAn+i,String.class),
-                            SharedPrefs.getInstance().get("thoigianlam"+BuaAn+i,Integer.class),
-                            SharedPrefs.getInstance().get("luotnguoithich"+BuaAn+i,Integer.class),
-                            SharedPrefs.getInstance().get("luotnguoixem"+BuaAn+i,Integer.class),
-                            SharedPrefs.getInstance().get("hinhanh"+BuaAn+i,String.class)
-                    ));
-                }
-                adapterCongThucToi = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucToi);
-                adapterCongThucToi.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucToi.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucToi.getView(i,null,null));
-                }
-            }
-            else {
-                adapterCongThucToi = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucToi);
-                adapterCongThucToi.notifyDataSetChanged();
-                for (int i = 0; i < adapterCongThucToi.getCount(); i++){
-                    lineCongThuc.addView(adapterCongThucToi.getView(i,null,null));
                 }
             }
         }
     }
     public void getGoiYCongThucNew(final Context context, final String BuaAn, final int currentTime, final LinearLayout lineCongThuc){
-        if (BuaAn.equals(TEXT_SANG)){
-            getDataCongThuc(context, BuaAn, new ListenerSang() {
-                @Override
-                public void onError(String message) {
-
-                }
-
-                @Override
-                public void onResponse() {
-                    SharedPrefs.getInstance().put("lateTime", currentTime);
-                    checkGetSang = true;
-                    adapterCongThucSang = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucSang);
-                    adapterCongThucSang.notifyDataSetChanged();
-
-                    for (int i = 0; i < adapterCongThucSang.getCount(); i++){
-                        lineCongThuc.removeAllViews();
-                        lineCongThuc.addView(adapterCongThucSang.getView(i,null,null));
-                    }
-                    progressBarSang.setVisibility(View.GONE);
-                    lineSang.setVisibility(View.VISIBLE);
-                }
-            });
-        }else if (BuaAn.equals(TEXT_TRUA)){
+        if (BuaAn.equals(TEXT_CHECK)){
 
             getDataCongThuc(context, BuaAn, new ListenerSang() {
                 @Override
@@ -519,39 +325,18 @@ public class ThucDonMoiNgay extends Fragment {
                 @Override
                 public void onResponse() {
                     SharedPrefs.getInstance().put("lateTime", currentTime);
-                    checkGetTrua = true;
-                    adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucTrua);
+                    checkGetData = true;
+                    adapterCongThucTrua = new AdapterCongThuc(context,R.layout.row_recipes,lstCongThuc);
                     adapterCongThucTrua.notifyDataSetChanged();
                     lineCongThuc.removeAllViews();
                     for (int i = 0; i < adapterCongThucTrua.getCount(); i++){
                         lineCongThuc.addView(adapterCongThucTrua.getView(i,null,null));
                     }
-                    progressBarTrua.setVisibility(View.GONE);
+                    progressBarThucDon.setVisibility(View.GONE);
                     lineTrua.setVisibility(View.VISIBLE);
                 }
             });
 
-        }else if (BuaAn.equals(TEXT_TOI)){
-            getDataCongThuc(context, BuaAn, new ListenerSang() {
-                @Override
-                public void onError(String message) {
-
-                }
-
-                @Override
-                public void onResponse() {
-                    SharedPrefs.getInstance().put("lateTime", currentTime);
-                    checkGetToi = true;
-                    adapterCongThucToi = new AdapterCongThuc(context,R.layout.row_cong_thuc,lstCongThucToi);
-                    adapterCongThucToi.notifyDataSetChanged();
-                    lineCongThuc.removeAllViews();
-                    for (int i = 0; i < adapterCongThucTrua.getCount(); i++){
-                        lineCongThuc.addView(adapterCongThucToi.getView(i,null,null));
-                    }
-                    progressBarToi.setVisibility(View.GONE);
-                    lineToi.setVisibility(View.VISIBLE);
-                }
-            });
         }
 
     }

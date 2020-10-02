@@ -12,20 +12,32 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
+        <Button
+            android:id="@+id/btnGoiY"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:text="Nhấn vào đây để gợi ý thực đơn"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/custom_btn_suggest"
+            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="200dp"
             android:id="@+id/lineLoad"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="gone"
             >
             <TextView
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Đang gợi ý thực đơn cho hôm nay vui lòng đợi trong giây lát..."
+                android:text="Hệ thống đang tìm kiếm thực đơn cho bạn vui lòng đợi trong giây lát..."
                 android:textStyle="bold"
                 android:textColor="#F2A22C"
                 android:textSize="18sp"
@@ -52,115 +64,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:text="@string/thuc_don_moi_ngay"
                 android:textColor="#000000"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#888" />
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <TextView
+                android:id="@+id/goiyTrua"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Sáng"
-                    android:textColor="#000000"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic"
-                    android:layout_marginBottom="10dp"/>
-
-                <TextView
-                    android:id="@+id/goiySang"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:layout_weight="1.5"
-                    android:background="@drawable/custom_search_edt"
-                    android:layout_marginEnd="10dp"
-                    android:textAlignment="center"
-                    android:text="Gợi ý thực đơn sáng khác"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="italic|bold"
-                    app:drawableLeftCompat="@drawable/ic_baseline_refresh_24"
-                    tools:ignore="RtlCompat" />
-
-            </LinearLayout>
-
-            <com.github.ybq.android.spinkit.SpinKitView
-                android:id="@+id/waitloadSang"
-                style="@style/SpinKitView.Large.Circle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
+                android:background="@drawable/custom_search_edt"
+                android:layout_marginBottom="10dp"
                 android:layout_gravity="center"
-                app:SpinKit_Color="#F2A22C"
-                android:visibility="gone"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:textStyle="italic|bold"
+                app:drawableLeftCompat="@drawable/ic_baseline_refresh_24"
+                tools:ignore="RtlCompat"
+                android:text="Gợi ý thực đơn khác"
                 />
-
-            <LinearLayout
-                android:id="@+id/lineSang"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible"
-                />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#888" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Trưa"
-                    android:textColor="#000000"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic"
-                    android:layout_marginBottom="10dp"/>
-
-                <TextView
-                    android:id="@+id/goiyTrua"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:layout_weight="1.5"
-                    android:background="@drawable/custom_search_edt"
-                    android:layout_marginEnd="10dp"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="italic|bold"
-                    app:drawableLeftCompat="@drawable/ic_baseline_refresh_24"
-                    tools:ignore="RtlCompat"
-                    android:text="Gợi ý thực đơn trưa khác"
-                    />
-
-            </LinearLayout>
-
             <com.github.ybq.android.spinkit.SpinKitView
                 android:id="@+id/waitloadTrua"
                 style="@style/SpinKitView.Large.Circle"
@@ -178,70 +107,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#888" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Tối"
-                    android:textColor="#000000"
-                    android:textSize="22sp"
-                    android:textStyle="bold|italic"
-                    android:layout_marginBottom="10dp"/>
-
-                <TextView
-                    android:id="@+id/goiyToi"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:layout_weight="1.5"
-                    android:background="@drawable/custom_search_edt"
-                    android:layout_marginEnd="10dp"
-                    android:textAlignment="center"
-                    android:textColor="#000000"
-                    android:textSize="15sp"
-                    android:textStyle="italic|bold"
-                    app:drawableLeftCompat="@drawable/ic_baseline_refresh_24"
-                    tools:ignore="RtlCompat"
-                    android:text="Gợi ý thực đơn tối khác"
-                    />
-
-            </LinearLayout>
-
-            <com.github.ybq.android.spinkit.SpinKitView
-                android:id="@+id/waitloadToi"
-                style="@style/SpinKitView.Large.Circle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="100dp"
-                android:layout_margin="10dp"
-                android:layout_gravity="center"
-                app:SpinKit_Color="#F2A22C"
-                android:visibility="gone"
-                />
-
-            <LinearLayout
-                android:id="@+id/lineToi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#888" />
         </LinearLayout>
+
         </LinearLayout>
 
 

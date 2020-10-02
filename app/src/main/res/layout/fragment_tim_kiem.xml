@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".View.Fragment.FragmentTimKiem">
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
         <ImageView
@@ -31,7 +32,19 @@
             android:drawableStart="@drawable/ic_baseline_search_24"
             android:inputType="text" />
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#888" />
+    <TextView
+        android:id="@+id/tvSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Nhập từ khóa cần tìm kiếm"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSearch"
         android:layout_width="match_parent"

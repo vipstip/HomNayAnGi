@@ -2,6 +2,8 @@ package com.billi.homnayangi.View.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ImageView;
@@ -29,11 +31,18 @@ public class ActivityLoad extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Do something after 5s = 5000ms
                 checkLoadComplete = true;
-                onBackPressed();
+                Intent intent = new Intent(ActivityLoad.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
-        }, 2000);
+        }, 3000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
     }
 
     @Override

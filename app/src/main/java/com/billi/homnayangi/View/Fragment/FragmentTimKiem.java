@@ -14,8 +14,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
@@ -35,6 +37,7 @@ import com.billi.homnayangi.Models.DataCongThuc;
 import com.billi.homnayangi.R;
 import com.billi.homnayangi.Utils.RecyclerItemClickListener;
 import com.billi.homnayangi.View.Activity.ActivitySearch;
+import com.billi.homnayangi.View.Activity.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,17 +55,20 @@ import java.util.Map;
  */
 public class FragmentTimKiem extends Fragment {
 
-    private String urlGetData = "http://192.168.1.61/crawldata/appLoadData.php";
-    private String rootDomain = "http://192.168.1.61/crawldata";
+    private String urlGetData = "https://noithattrangtrihoanganh.com/appLoadData.php";
+    private String rootDomain = "https://noithattrangtrihoanganh.com";
 
     AutoCompleteTextView edtSearch;
 
     List<DataCongThuc> lstdataCongThuc = new ArrayList<>();
     AdapterSearch mAdapter;
     String txtSearch = "";
+    TextView tvSearch;
     int start = 0;
     int countGet = 5;
     boolean checkSearch = false;
+    boolean checkEdt;
+    MainActivity activity;
 
     public FragmentTimKiem() {
         // Required empty public constructor
@@ -71,6 +77,7 @@ public class FragmentTimKiem extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        activity = (MainActivity) getActivity();
     }
 
     public static FragmentTimKiem newInstance() {
@@ -90,30 +97,30 @@ public class FragmentTimKiem extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_tim_kiem, container, false);
-
         final RecyclerView recycler = (RecyclerView)view.findViewById(R.id.recyclerSearch);
         edtSearch = view.findViewById(R.id.edt_search);
+        tvSearch = view.findViewById(R.id.tvSearch);
         start = 0;
 
-        if (!checkSearch){
-            checkSearch = true;
-            lstdataCongThuc.clear();
-            recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
-            mAdapter = new AdapterSearch(recycler,getActivity(),lstdataCongThuc);
-            recycler.setAdapter(mAdapter);
-            GetData(view.getContext(), String.valueOf(start), String.valueOf(countGet),txtSearch);
-        } else {
-            recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
-            mAdapter = new AdapterSearch(recycler,getActivity(),lstdataCongThuc);
-            recycler.setAdapter(mAdapter);
+        recycler.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        mAdapter = new AdapterSearch(recycler,getActivity(),lstdataCongThuc);
+        recycler.setAdapter(mAdapter);
+        if (checkSearch){
+            tvSearch.setVisibility(View.GONE);
         }
-
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                edtSearch.clearFocus();
+                closeKeyboard();
+                return false;
+            }
+        });
         mAdapter.setLoadMore(new ListenerSearch() {
             @Override
             public void onLoadMore() {
-                if(lstdataCongThuc.size() < 30) // Change max size
+                if(lstdataCongThuc.size() < 150) // Change max size
                 {
-
                     //Random more data
                     start = start + countGet;
                     GetData(view.getContext(),String.valueOf(start),String.valueOf(countGet),txtSearch);
@@ -145,8 +152,7 @@ public class FragmentTimKiem extends Fragment {
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 boolean handled = false;
                 if (i == EditorInfo.IME_ACTION_SEARCH) {
-                    InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
+                    closeKeyboard();
                     edtSearch.clearFocus();
                     lstdataCongThuc.clear();
                     start = 0;
@@ -156,10 +162,20 @@ public class FragmentTimKiem extends Fragment {
                 return handled;
             }
         });
+        recycler.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                edtSearch.clearFocus();
+                closeKeyboard();
+                return false;
+            }
+        });
+        final AlphaAnimation click = new AlphaAnimation(1F, 0.2F);
         recycler.addOnItemTouchListener(
                 new RecyclerItemClickListener(view.getContext(), recycler ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         try {
+                            view.startAnimation(click);
                             Intent intent = new Intent(view.getContext(), ActivitySearch.class);
                             intent.putExtra("Search", lstdataCongThuc.get(position).getTenCongThuc());
                             view.getContext().startActivity(intent);
@@ -198,7 +214,13 @@ public class FragmentTimKiem extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
+                        checkSearch = true;
+                        if (lstdataCongThuc.isEmpty()){
+                            tvSearch.setText("Không có kết quả cần tìm kiếm");
+                            tvSearch.setVisibility(View.VISIBLE);
+                        } else {
+                            tvSearch.setVisibility(View.GONE);
+                        }
                         lstdataCongThuc.add(null);
                         mAdapter.notifyItemInserted(lstdataCongThuc.size()-1);
                         lstdataCongThuc.remove(lstdataCongThuc.size()-1);
@@ -239,10 +261,28 @@ public class FragmentTimKiem extends Fragment {
         super.onPause();
         Bundle bundle = new Bundle();
         onSaveInstanceState(bundle);
+        activity.setCheckEdt(false);
+        edtSearch.clearFocus();
+        closeKeyboard();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        checkEdt = activity.getCheckEdt();
+        if (checkEdt){
+            edtSearch.requestFocus();
+            showKeyboard();
+        }
+    }
+
+    public void showKeyboard(){
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    public void closeKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
     }
 }

@@ -98,7 +98,7 @@ public class AdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(viewType == VIEW_TYPE_ITEM)
         {
             View view = LayoutInflater.from(activity)
-                    .inflate(R.layout.row_cong_thuc,parent,false);
+                    .inflate(R.layout.row_recipes,parent,false);
 
             return new ItemViewHolder(view);
         }
@@ -121,10 +121,11 @@ public class AdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .load(dataCongThucs.get(position).getHinhAnh())
                     .transform(new CenterCrop(), new RoundedCorners(10))
                     .into(viewHolder.imgCongThuc);
+            String txtTimeAdd = dataCongThucs.get(position).getThoigianNau() + " phút";
             viewHolder.txtTenCongThuc.setText(dataCongThucs.get(position).getTenCongThuc());
             viewHolder.txtView.setText(String.valueOf(dataCongThucs.get(position).getLuongNguoiXem()));
             viewHolder.txtLike.setText(String.valueOf(dataCongThucs.get(position).getLuongThich()));
-            viewHolder.txtTime.setText(String.valueOf(dataCongThucs.get(position).getThoigianNau()));
+            viewHolder.txtTime.setText(txtTimeAdd);
 
         }
         else if(holder instanceof LoadingViewHolder)

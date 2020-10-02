@@ -2,27 +2,34 @@ package com.billi.homnayangi.View.Activity;
 
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.billi.homnayangi.View.Fragment.FragmentCongThuc;
 import com.billi.homnayangi.View.Fragment.FragmentTaiKhoan;
 import com.billi.homnayangi.View.Fragment.FragmentTimKiem;
 import com.billi.homnayangi.View.Fragment.TextFragment;
 import com.billi.homnayangi.View.Fragment.ThucDonMoiNgay;
 import com.billi.homnayangi.R;
 import com.yinglan.alphatabs.AlphaTabsIndicator;
+import com.yinglan.alphatabs.OnTabChangedListner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +40,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText edtSearch;
     private ViewPager mViewPger;
     private LinearLayout lineSearch;
+    private boolean checkEdt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this,ActivityLoad.class);
-        startActivity(intent);
         init();
         MainAdapter mainAdapter = new MainAdapter(getSupportFragmentManager());
         mViewPger.setAdapter(mainAdapter);
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         edtSearch.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                checkEdt = true;
                 alphaTabsIndicator.setTabCurrenItem(2);
                 return false;
             }
@@ -65,7 +72,20 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
+        new AlertDialog.Builder(this)
+                .setTitle("Bạn muốn thoát khỏi ứng dụng")
+                .setMessage("Bạn có chắc chắn?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        finish();
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     @Override
@@ -82,6 +102,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public boolean getCheckEdt(){
+        return checkEdt;
+    }
+    public void setCheckEdt(boolean checkEdt){
+        this.checkEdt = checkEdt;
+    }
+
     public void init(){
         lineSearch = findViewById(R.id.lineSearch);
         alphaTabsIndicator = findViewById(R.id.alphaIndicator);
@@ -92,13 +119,12 @@ public class MainActivity extends AppCompatActivity {
     private class MainAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
 
         private List<Fragment> fragments = new ArrayList<>();
-        private String[] titles = {"Gợi ý thực đơn", "Công thức", "Tìm kiếm", "Thông tin"};
 
         public MainAdapter(FragmentManager fm) {
             super(fm,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
             fragments.add(ThucDonMoiNgay.newInstance());
-            fragments.add(TextFragment.newInstance(titles[1]));
+            fragments.add(FragmentCongThuc.newInstance());
             fragments.add(FragmentTimKiem.newInstance());
             fragments.add(FragmentTaiKhoan.newInstance());
         }

@@ -4,15 +4,11 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.billi.homnayangi.R;
-import com.billi.homnayangi.Utils.SharedPrefs;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentTaiKhoan extends Fragment {
